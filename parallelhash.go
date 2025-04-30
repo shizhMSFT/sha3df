@@ -7,7 +7,7 @@ func SumParallelHash128(data []byte, blockSize, length int) []byte {
 
 	n := (len(data) + blockSize - 1) / blockSize
 	h.Write(leftEncode(uint64(blockSize)))
-	for i := 0; i < n; i++ {
+	for range n {
 		h.Write(sha3.SumSHAKE128(data[:blockSize], 32))
 		data = data[blockSize:]
 	}
@@ -24,7 +24,7 @@ func SumParallelHash256(data []byte, blockSize, length int) []byte {
 
 	n := (len(data) + blockSize - 1) / blockSize
 	h.Write(leftEncode(uint64(blockSize)))
-	for i := 0; i < n; i++ {
+	for range n {
 		h.Write(sha3.SumSHAKE256(data[:blockSize], 64))
 		data = data[blockSize:]
 	}
