@@ -136,6 +136,28 @@ func (ph *ParallelHash) WriteBlockHash(h []byte) error {
 	return nil
 }
 
+// WriteBlockHashes writes multiple block hashes to the ParallelHash.
+func (ph *ParallelHash) WriteBlockHashes(hashes [][]byte) error {
+	if ph.committed {
+		return errors.New("already committed")
+	}
+
+	// check before writing
+	for _, h := range hashes {
+		if len(h) != ph.blockHashSize {
+			return fmt.Errorf("mismatch block hash size: got %d, want %d", len(h), ph.blockHashSize)
+		}
+	}
+
+	// write all hashes
+	for _, h := range hashes {
+		ph.s.Write(h)
+	}
+	ph.blockCount += uint64(len(hashes))
+	return nil
+}
+
+// init initializes the ParallelHash instance
 func (ph *ParallelHash) init() {
 	ph.s.Write(leftEncode(uint64(ph.blockSize)))
 }
